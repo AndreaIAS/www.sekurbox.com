@@ -1,0 +1,166 @@
+<div class="navigation">
+
+        <ul class="main">
+			<?php 
+				if ($page=='prodotti') {
+				echo '<li><a href="#prodotti" class="active"><span class="icom-cabinet"></span><span class="text">Prodotti</span></a></li>';
+				}else
+				{
+				echo '<li><a href="#prodotti"><span class="icom-cabinet"></span><span class="text">Prodotti</span></a></li>';
+				}			
+
+				if ($page=='ecommerce') {
+				echo '<li><a href="#ecommerce" class="active"><span class="icom-cart"></span><span class="text">Ecommerce</span></a></li>';
+				}else
+				{
+				echo '<li><a href="#ecommerce"><span class="icom-cart"></span><span class="text">Ecommerce</span></a></li>';
+				}
+
+				if ($page=='clienti') {
+				echo '<li><a href="#clienti" class="active"><span class="icom-users"></span><span class="text">Clienti</span></a></li>';
+				}else
+				{
+				echo '<li><a href="#clienti"><span class="icom-users"></span><span class="text">Clienti</span></a></li>';
+				}
+
+				if ($page=='contenuti') {
+				echo '<li><a href="#contenuti" class="active"><span class="icom-pencil1"></span><span class="text">Contenuti</span></a></li>';
+				}else
+				{
+				echo '<li><a href="#contenuti"><span class="icom-pencil1"></span><span class="text">Contenuti</span></a></li>';
+				}
+                                if ($page=='slider') {
+				echo '<li><a href="#slider" class="active"><span class="icom-pencil1"></span><span class="text">Slider</span></a></li>';
+				}else
+				{
+				echo '<li><a href="#slider"><span class="icom-pencil1"></span><span class="text">Slider</span></a></li>';
+				}
+				
+            ?>
+        </ul>
+
+        <div class="control"></div>        
+
+        <div class="submain">
+            
+            <div id="prodotti">
+                <div class="menu">
+                    <a href="http://www.sekurbox.com/Admin/prodotti.php"><span class="icon-list-alt"></span> Prodotti</a>
+                    <a href="http://www.sekurbox.com/Admin/inserisci-nuovo-prodotto.php"><span class="icon-plus"></span> Inserisci nuovo prodotto</a>
+                    <a href="http://www.sekurbox.com/Admin/prodotti-primo-piano.php"><span class="icon-plus"></span> Primo piano</a>
+                    <div class="dr"><span></span></div>
+<?php 
+$Risultato_menu_prodotti=mysql_query("SELECT 
+                                         sp.*, cp.*  
+                                         FROM sezioni_prodotti sp
+                                         LEFT OUTER JOIN categorie_prodotti AS cp ON sp.id_sezione = cp.id_sezione 
+                                         ORDER BY sp.posizione, cp.posizione ASC", $db);
+					
+if (!$Risultato_menu_prodotti)
+	{
+	die ("La tabella selezionata non esiste" . mysql_error());
+	}
+$sezione = "";
+$x=0;
+while ($riga_menu_prodotti=mysql_fetch_array($Risultato_menu_prodotti))
+{	
+?> 
+
+<?php 
+	if ($lingua =="it")
+	{
+	$sezione_lg = $riga_menu_prodotti['nome_sezione_ita'];	
+	}
+	else
+	{
+	$sezione_lg = $riga_menu_prodotti['nome_sezione_eng'];	
+	}
+	if ($sezione != $sezione_lg)
+	{
+		if($x==0)
+		{
+			echo '<div style="text-transform:uppercase;">';
+			echo '<a href="http://www.sekurbox.com/Admin/prodotti.php?id_sezione=' . $riga_menu_prodotti['id_sezione'] . '">';
+				echo "<b>" . $riga_menu_prodotti['nome_sezione_ita'] . "</b>";
+			echo '</a>';
+			echo '</div>';
+		}
+		else 
+		{
+			echo '<div style="text-transform:uppercase;">';
+			echo '<a href="http://www.sekurbox.com/Admin/prodotti.php?id_sezione=' . $riga_menu_prodotti['id_sezione'] . '">';
+				echo "<b>" . $riga_menu_prodotti['nome_sezione_ita'] . "</b>";
+			echo '</a>';
+			echo '</div>';
+		}
+		$x=1;
+	}
+	echo '<a href="http://www.sekurbox.com/Admin/prodotti.php?id_sezione=' . $riga_menu_prodotti['id_sezione'] . '&id_categoria=' . $riga_menu_prodotti['id_categoria'] .'">';
+	echo $riga_menu_prodotti['categoria_ita'];
+	echo '</a>';
+	
+	if ($lingua=="it") {$sezione = $riga_menu_prodotti['nome_sezione_ita']; } else {$sezione = $riga_menu_prodotti['nome_sezione_eng'];}	
+}
+?>               
+           
+                    <div class="dr"><span></span></div>
+                    <a href="http://www.sekurbox.com/Admin/sezioni-prodotti.php"><span class="icon-list-alt"></span> Sezioni</a>                    
+                    <a href="http://www.sekurbox.com/Admin/inserisci-nuova-sezione.php"><span class="icon-plus"></span> Inserisci nuova sezione</a>
+                    <div class="dr"><span></span></div>
+                    <a href="http://www.sekurbox.com/Admin/categorie-prodotti.php"><span class="icon-list-alt"></span> Categorie</a> 
+                    <a href="http://www.sekurbox.com/Admin/inserisci-nuova-categoria.php"><span class="icon-plus"></span> Inserisci nuova categoria</a>
+                    <div class="dr"><span></span></div>   
+                    <a href="http://www.sekurbox.com/Admin/sottocategorie-prodotti.php"><span class="icon-list-alt"></span> Sottocategorie</a> 
+                    <a href="http://www.sekurbox.com/Admin/inserisci-nuova-sottocategoria.php"><span class="icon-plus"></span> Inserisci nuova sottocategoria</a>                       
+            </div> 
+            </div>
+
+ 			<div id="ecommerce">
+                <div class="menu">
+                    <a href="http://www.sekurbox.com/Admin/listini.php"><span class="icon-list-alt"></span> Listini Prezzi</a>
+                    <a href="http://www.sekurbox.com/Admin/listini-crea-nuovo.php"><span class="icon-list-alt"></span> Crea nuovo Listino Prezzi</a>
+                	<div class="dr"><span></span></div>                    
+                    <a href="http://www.sekurbox.com/Admin/ordini.php"><span class="icon-list-alt"></span> Ordini</a>
+                	<div class="dr"><span></span></div>
+                    <a href="http://www.sekurbox.com/Admin/iva.php"><span class="icon-list-alt"></span> IVA</a>
+                    <a href="http://www.sekurbox.com/Admin/inserisci-nuova-aliquota.php"><span class="icon-list-alt"></span> Inserisci nuova aliquota</a>
+                	<div class="dr"><span></span></div>
+                    <a href="http://www.sekurbox.com/Admin/spese-di-spedizione.php"><span class="icon-list-alt"></span> Spese di spedizione</a>
+                    <a href="http://www.sekurbox.com/Admin/inserisci-nuova-spesa-di-spedizione.php"><span class="icon-list-alt"></span> Inserisci nuova spesa di spedizione</a>
+                	<div class="dr"><span></span></div>
+                    <a href="http://www.sekurbox.com/Admin/metodi-di-pagamento.php"><span class="icon-list-alt"></span> Metodi di pagamento</a>
+                    <a href="http://www.sekurbox.com/Admin/inserisci-nuova-metodo-di-pagamento.php"><span class="icon-list-alt"></span> Inserisci nuovo metodo di pagamento</a>
+                	<div class="dr"><span></span></div>                    
+                    <a href="http://www.sekurbox.com/Admin/ordini-non-conclusi.php"><span class="icon-list-alt"></span> Ordini non conclusi</a>
+                	<div class="dr"><span></span></div>
+                    <a href="http://www.sekurbox.com/Admin/coupon.php"><span class="icon-list-alt"></span> Coupon</a>
+               </div> 
+			</div>
+ 		
+         	<div id="contenuti">
+                <div class="menu">
+                    <a href="http://www.sekurbox.com/Admin/articoli.php"><span class="icon-list-alt"></span> Blog e notizie</a>
+                    <a href="http://www.sekurbox.com/Admin/inserisci-nuovo-articolo.php"><span class="icon-plus"></span> Inserisci nuovo post</a>
+                	<div class="dr"><span></span></div>
+				    <a href="http://www.sekurbox.com/Admin/contenuti-statici.php"><span class="icon-list-alt"></span> Contenuti statici</a>
+                    <a href="http://www.sekurbox.com/Admin/inserisci-contenuto-statico.php"><span class="icon-list-alt"></span> Inserisci contenuto statico</a>                                                
+            	</div> 
+			</div>
+        
+        <div id="clienti">
+                <div class="menu">
+                   <a href="http://www.sekurbox.com/Admin/clienti.php"><span class="icon-list-alt"></span> Clienti</a>                    
+                   <div class="dr"><span></span></div>                    
+                   <a href="http://www.sekurbox.com/Admin/amministroatori.php"><span class="icon-list-alt"></span> Amministratori sito</a>                                                                                                                    
+               	</div>                
+       </div>  
+              <div id="slider">
+                <div class="menu">
+                   <a href="http://www.sekurbox.com/Admin/slider.php"><span class="icon-list-alt"></span>Gestisci slider</a>                    
+                   <div class="dr"><span></span></div>                    
+                                                                                                                                      
+               	</div>                
+       </div>
+        
+        </div>
+    </div>

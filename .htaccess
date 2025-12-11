@@ -1,0 +1,73 @@
+
+<IfModule mod_security.c>
+SecFilterEngine Off
+SecFilterScanPOST Off
+</IfModule>
+
+Options -MultiViews
+ErrorDocument 404 /notfound.php
+RewriteEngine On
+RewriteBase /
+
+#Redirect 301 /it/prodotto620/diffusore-da-incasso-per-scatola-503.html
+#Redirect 301 /it/prodotto662/diffusore-da-incasso-per-scatola-503.html
+#Redirect 301 /it/prodotto573/giove-free-bluetooth-con-telecomando-nero.html
+#Redirect 301 /it/prodotto677/diffusione-sonora-vivaldi.html
+#Redirect 301 /it/prodotto681/giove-free-b-con-telecomando-silver.html
+#Redirect 301 /it/prodotto574/ingresso-aux-giove-free.html
+#Redirect 301 /it/prodotto667/giove-ifree-vivaldi.html
+#Redirect 301 /it/prodotto668/giove-ifree-vivaldi.html
+#Redirect 301 /it/prodotto669/giove-ifree-vivaldi.html
+#Redirect 301 /it/prodotto670/giove-ifree-vivaldi.html
+#Redirect 301 /it/prodotto622/diffusore-da-incasso-per-scatola-506e.html
+
+#RewriteRule http://www.sekurbox.com  https://www.sekurbox.com/it/ [L,R=301] 
+#RewriteRule http://www.sekurbox.com/uk/  https://www.sekurbox.com/en/ [L,R=301]
+
+
+ 
+RewriteRule  ^$   https://www.sekurbox.com/it/ [L,R=301] 
+RewriteRule  ^en/$  index.php?setlng=en [L]
+RewriteRule  ^it/$  index.php?setlng=it [L]
+
+
+RewriteRule ^carts  carts.php [L] 
+
+RewriteRule ^it/elenco-prodotti elenco_prodotti.php?setlng=it [L]
+RewriteRule ^en/elenco-prodotti elenco_prodotti.php?setlng=en [L]
+
+RewriteRule ^it/p_(.+)/(.+) prodotto.php?id_prodotto=$1 [L]
+RewriteRule ^en/p_(.+)/(.+) prodotto.php?id_prodotto=$1 [L]
+
+RewriteRule ^it/c_(.+)/(.+) categorie.php?id_cat=$1&seo=$2 [L]
+RewriteRule ^en/c_(.+)/(.+) categorie.php?id_cat=$1&seo=$2 [L]
+
+RewriteRule ^it/s_(.+)/(.+) scat.php?id_scat=$1&seo=$2 [L]
+RewriteRule ^en/s_(.+)/(.+) scat.php?id_scat=$1&seo=$2 [L]
+
+RewriteRule ^it/guida-acquisto guida-acquisto.php [L]
+RewriteRule ^it/contatti contatti.php [L]
+RewriteRule ^it/condizioni-vendita  condizioni-vendita.php [L]
+RewriteRule ^it/recesso  diritto-recesso.php [L]
+RewriteRule ^it/note-legali  note-legali.php [L]
+RewriteRule ^it/privacy  privacy.php [L]
+
+
+
+RewriteCond %{HTTPS} off
+RewriteCond %{HTTP:X-Forwarded-Proto} !https
+RewriteRule ^(.*)$ https://%{HTTP_HOST}%{REQUEST_URI} [L,R=301]
+
+
+#RewriteRule ^pagina_(.+)/ index.php?offset=$1 [L]
+#RewriteRule ^mcat_(.+)/(.+)/pagina_(.+) macro.php?id_mcat=$1&seo=$2&offset=$3 [L]
+#RewriteRule ^mcat_(.+)/(.+) macro.php?id_mcat=$1&seo=$2 [L]
+
+#RewriteRule ^scat_(.+)/(.+)/pagina_(.+) sottocategorie.php?id_scat=$1&seo=$2&offset=$3 [L]
+#RewriteRule ^scat_(.+)/(.+) sottocategorie.php?id_scat=$1&seo=$2 [L]
+#RewriteRule ^item_(.+)/(.+) prodotto.php?id_item=$1 [L]
+
+#RewriteRule ^cerca/pagina_(.+) search.php?offset=$1 [L]
+#RewriteRule ^cerca search.php [L]
+#RewriteRule ^blog([0-9]+)/([A-Za-z]+) dettaglio_articolo.php?id_articolo=$1 [L]
+#RewriteRule ^blog-([0-9]+) blog.php?cat=$1 [L]
