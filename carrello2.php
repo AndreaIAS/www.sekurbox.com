@@ -244,8 +244,6 @@ include("inc_header.php");
                                     <input type="image" src="<?= BASE_URL; ?>images/pagaadessoconcarta.jpg" />
                                 </form>
 
-
-
                             <?php } else if ($_POST['pay_metod'] == 'Bonifico Bancario') {
 
                                 echo $lang['testo_pag_bon'];
@@ -300,7 +298,6 @@ include("inc_header.php");
     <script src="<?= BASE_URL; ?>js/select2.min.js" type="text/javascript"></script>
     <!-- Custom Js -->
     <script src="<?= BASE_URL; ?>js/main.js" type="text/javascript"></script>
-
 
 </body>
 

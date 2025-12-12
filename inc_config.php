@@ -12,14 +12,11 @@ include('cart.class.php');
 
 session_start();
 
-
 define("BASE_IMAGE", '/web/htdocs/www.sekurbox.com/home/upload/image/');
 define("BASE_PATH", '/web/htdocs/www.sekurbox.com/home/');
 define("BASE_URL", 'https://www.sekurbox.com/');
 
-
 $pagename = basename($_SERVER['PHP_SELF']);
-
 
 //Array per l'upload di file o imamgini
 $array_img = array("jpg", "jpeg", "gif", "png", "JPG", "JPEG", "GIF", "PNG");
@@ -46,11 +43,9 @@ $array_costo_pag = array(
     4 => "0.00"
 );
 
-
 $array_testo_sped = array(1 => "Spedizione tramite corriere espresso");
 
 $array_costo_sped = array(1 => "9.90");
-
 
 define("EMAIL_ADM", 'info@sekurbox.com');
 define("SITE_NAME", "Sekurbox.com");
@@ -58,8 +53,6 @@ define("EMAIL_ADM_NAME", "Sekurbox.com");
 
 define("IMAGE_DIR", 'upload/image/');
 define("FILE_DIR", 'upload/files/');
-
-
 
 //LINGUA                              
 if (isset($_REQUEST['setlng'])) {
@@ -90,8 +83,6 @@ require("lang_" . $lng . ".php");
 
 // FINE LINGUA
 
-
-
 //**************************DATI DATABASE *****************************************//
 
 define("DB_HOST", '62.149.150.196');
@@ -119,7 +110,6 @@ if (isset($_REQUEST['logout'])) {
     session_destroy();
     header("Location: index.php");
 }
-
 
 // *********************** CONFIGURAZIONE HP THUMB ************************ //
 $ServerInfo['gd_string']  = 'unknown';
