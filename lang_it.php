@@ -54,6 +54,7 @@
   $lang['allegati']="Allegati";
   $lang['descrizione']="Descrizione";
   $lang['del_from_cart']="Elimina dal carrello";
+  $lang['img']="Foto";
   $lang['nome_za']="Nome Z->A"; 
   $lang['nome_az']="Nome A->Z";
   $lang['prezzo_des']="Prezzo Decres.";

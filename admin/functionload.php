@@ -425,7 +425,7 @@ if ($_POST['function'] == 'insutente') {
                      VALUES('" . mysql_escape_string($_POST['cellulare']) . "',NOW(),'" . mysql_escape_string($_POST['attivo']) . "',
                             '" . mysql_escape_string($_POST['ragione']) . "','" . mysql_escape_string($_POST['nome']) . "'
                             ,'" . mysql_escape_string($_POST['cognome']) . "'
-                               ,'" . mysql_escape_string($_POST['password']) . "','" . mysql_escape_string($_POST['p_iva']) . "' 
+                               ,'" . mysql_escape_string(md5($_POST['password'])) . "','" . mysql_escape_string($_POST['p_iva']) . "' 
                             ,'" . mysql_escape_string($_POST['cod_fiscale']) . "','" . mysql_escape_string($_POST['indirizzo']) . "'
                                 ,'" . mysql_escape_string($_POST['id_nazione']) . "' ,'" . mysql_escape_string($_POST['id_comune']) . "'
                             ,'" . mysql_escape_string($_POST['cap']) . "' ,'" . mysql_escape_string($_POST['email']) . "' ,'" . mysql_escape_string($_POST['tipologia']) . "' 
@@ -467,7 +467,7 @@ if ($_POST['function'] == 'editutente') {
                       attivo='" . mysql_escape_string($_POST['attivo']) . "',
                       ragione='" . mysql_escape_string($_POST['ragione']) . "',
                       cognome='" . mysql_escape_string($_POST['cognome']) . "',
-                      password='" . mysql_escape_string($_POST['password']) . "',
+                      password='" . mysql_escape_string(md5($_POST['password'])) . "',
                       p_iva='" . mysql_escape_string($_POST['p_iva']) . "',
                       cod_fiscale='" . mysql_escape_string($_POST['cod_fiscale']) . "',
                       indirizzo='" . mysql_escape_string($_POST['indirizzo']) . "',
