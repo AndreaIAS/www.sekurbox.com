@@ -214,3 +214,17 @@ function ritornamese($value)
     $data = "" . $settimana . "&nbsp;" . $giorno . "&nbsp;" . $mese . "&nbsp;" . $anno . "";
     return $mese;
 }
+
+function getUserIP() {
+    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        // IP condiviso da proxy
+        $ip = $_SERVER['HTTP_CLIENT_IP'];
+    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        // IP passato da proxy o bilanciatori
+        $ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+    } else {
+        // IP diretto del client
+        $ip = $_SERVER['REMOTE_ADDR'];
+    }
+    return $ip;
+}

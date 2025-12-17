@@ -301,13 +301,13 @@ include("inc_header.php");
                                 </div>
 
                                 <div class="form-group">
-                                    <span><input type="radio" name="metodo_sped" value="Corriere Bartolini" checked="" for="8" />Corrire Bartolini (+ € 8.00) </span>
+                                    <span><input type="radio" name="metodo_sped" value="Bartolini" checked="" for="8" />Corrire Bartolini (+ € 8.00) </span>
                                 </div>
                                 <div class="form-group">
-                                    <span><input type="radio" name="metodo_sped" value="Corriere Gls" for="8" />Corrire GLS (+ € 8.00) </span>
+                                    <span><input type="radio" name="metodo_sped" value="Gls" for="8" />Corrire GLS (+ € 8.00) </span>
                                 </div>
                                 <div class="form-group">
-                                    <span><input type="radio" name="metodo_sped" value="Ritiro presso negozio di Lecce" for="0" />Ritiro presso Negozio di Lecce (+ € 0.00) </span>
+                                    <span><input type="radio" name="metodo_sped" value="Ritiro_Lecce" for="0" />Ritiro presso Negozio di Lecce (+ € 0.00) </span>
                                 </div>
                             </div>
                         </div>
@@ -322,12 +322,11 @@ include("inc_header.php");
                                         <h2 class="cart-area-title"><?= $lang['pay_metod']; ?></h2>
                                     </div>
                                 </div>
-
-                                <!--                        <div class="form-group">
-                            <span><input type="radio" name="pay_metod" value="Carta di Credito"  for="0" />Carta di credito (+ € 0.00) </span>
-                        </div>-->
                                 <div class="form-group">
-                                    <span><input type="radio" name="pay_metod" value="Bonifico Bancario" for="0" checked="" />Bonifico bancario (+ € 0.00) </span>
+                                    <span><input type="radio" name="pay_metod" value="Carta" for="0" />Carta di credito (+ € 0.00) </span>
+                                </div>
+                                <div class="form-group">
+                                    <span><input type="radio" name="pay_metod" value="Bonifico" for="0" checked="" />Bonifico bancario (+ € 0.00) </span>
                                 </div>
                                 <div class="form-group">
                                     <span><input type="radio" name="pay_metod" value="Contrassegno" for="6" />Contrassegno (+ € 6.00) </span>

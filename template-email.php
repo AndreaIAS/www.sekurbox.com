@@ -60,7 +60,7 @@ $articoli = $db->resultset();
                                                   <?php echo $ordine['tipo_spedi'] . '&nbsp;&nbsp;&euro;' . $ordine['spese_spe']; ?><br /><br />
                                                   <strong>Hai scelto di pagare con:</strong><br />
                                                   <?php echo $ordine['tipo_pagam'] . '&nbsp;&nbsp;&euro;' . $ordine['spese_pag']; ?>
-                                                  <?php if ($ordine['tipo_pagam'] == 'Carta di Credito') { ?>
+                                                  <?php if ($ordine['tipo_pagam'] == 'Carta') { ?>
                                                        <br />CARTA DI CREDITO<br />
                                                        Se ancora non hai effettuato il pagamento, puoi sempre farlo dalla tua <a href="<?php echo BASE_URL; ?>ordini.php" style="color: #19a9e5; text-decoration: none;">area privata, nella sezione "I tuoi ordini"</a>.
                                                   <?php } ?>
@@ -68,7 +68,7 @@ $articoli = $db->resultset();
                                         </tr>
                                    </table>
 
-                                   <?php if ($ordine['tipo_pagam'] == 'Bonifico Bancario') { ?>
+                                   <?php if ($ordine['tipo_pagam'] == 'Bonifico') { ?>
                                         <table role="presentation" border="0" cellpadding="0" cellspacing="0" width="100%" style="margin-top: 20px; background-color: #fff3cd; border: 2px dotted #d72c38; border-radius: 6px;">
                                              <tr>
                                                   <td style="padding: 15px; color: #856404;">

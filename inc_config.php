@@ -8,6 +8,7 @@
 //$cache_limiter = session_cache_limiter();
 //session_cache_expire(60); // in minutes
 
+
 include('cart.class.php');
 
 session_start();
@@ -161,3 +162,17 @@ require_once("class.phpmailer.php");
 $title = "";
 $description = "";
 $keywords = "";
+
+//SET OFFLINE
+$setOffline = true;
+if ($setOffline) {
+    $mioIp = '95.242.103.35';
+    $ipaddress = getUserIP();
+
+    //    echo '<pre>', print_r($ipaddress, 1), '</pre>';
+    //    echo '<pre>', print_r($mioIp, 1), '</pre>';
+    //    echo '<pre>', print_r(($mioIp == $ipaddress), 1), '</pre>';
+    if (($mioIp !== $ipaddress) && ($pagename != "manutenzione.php")){
+        header("Location:" . BASE_URL . "it/manutenzione");
+    }
+}

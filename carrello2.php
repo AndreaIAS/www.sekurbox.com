@@ -109,37 +109,63 @@ if (isset($_POST['sped_diverso'])) {
     $cellsped = $list_ut['cellulare'];
 }
 
-if ($_POST['metodo_sped'] == 'Corriere Bartolini' or $_POST['metodo_sped'] == 'Corriere Gls') {
+if ($_POST['metodo_sped'] == 'Bartolini' or $_POST['metodo_sped'] == 'Gls') {
     $costo_sped = 8;
 } else {
     $costo_sped = 0;
 }
-if ($_POST['pay_metod'] == 'Carta di Credito' or $_POST['pay_metod'] == 'Bonifico Bancario') {
+if ($_POST['pay_metod'] == 'Carta' or $_POST['pay_metod'] == 'Bonifico') {
     $costo_pay = 0;
 } else {
     $costo_pay = 0;
 }
 
 $totale_ordine = ((($cart->total / 100) * 22) + $cart->total) + $costo_sped + $costo_pay;
+$idPagamUnivoco = uniqid("ORD-");
 
-$db->query("INSERT INTO bag_ordini(id_utente,tipo_pagam,tipo_spedi,note,data,totale,spese_spe,spese_pag,email,
+$db->query("INSERT INTO bag_ordini(id_utente,tipo_pagam,id_pagam,tipo_spedi,note,data,totale,spese_spe,spese_pag,email,
                                    cognome,nome,indirizzo,citta,cap,telefono,cellulare,provincia,spedito,pagato,nazione)
-            VALUES('" . $_SESSION['user_site'] . "','" . $_POST['pay_metod'] . "','" . $_POST['metodo_sped'] . "',:note,now(),'" . $totale_ordine . "',
+            VALUES('" . $_SESSION['user_site'] . "','" . $_POST['pay_metod'] . "',:id_pagam,'" . $_POST['metodo_sped'] . "',:note,now(),'" . $totale_ordine . "',
                    '" . $costo_sped . "','" . $costo_pay . "','" . $mailsped . "','" . $cognsped . "','" . $nomesped . "','" . $indsped . "','" . $cittasped . "',
                    '" . $capsped . "','" . $telsped . "','" . $cellsped . "','" . $provsped . "','n','n','" . $nazionesped . "') 
           ");
 
-$result = $db->execute(array('note' => $_POST['note_ordine']));
+$result = $db->execute(array('id_pagam' => $idPagamUnivoco, 'note' => $_POST['note_ordine']));
 
 $id_ordine = $db->lastInsertId();
 
 foreach ($cart->get_contents() as $item) {
-
     $db->query("INSERT INTO bag_det_ord(id_articolo,qta,prezzo,id_ordine)
                 VALUES('" . $item['id'] . "','" . $item['qty'] . "','" . $item['price'] . "','" . $id_ordine . "') 
                ");
     $result = $db->execute();
 }
+
+// Riprendiamo tutti i dati utili
+$db->query("SELECT
+                u.id as idutente,
+                u.cognome as cognomeutente,
+                u.nome as nomeutente,
+                u.ragione as ragioneutente,
+                u.indirizzo as indirizzoutente,
+                u.cap as caputente,
+                u.email as emailutente,
+                u.telefono as telefonoutente,
+                o.id as idordine,
+                o.tipo_pagam,
+                id_pagam,
+                tipo_sped,
+                data as data_pgam,
+                totale,
+                spese_spe,
+                spese_pag,
+                pagato,
+                spedito
+            FROM bag_utenti u
+            INNER JOIN bag_ordini o ON o.id_utente = u.id
+            WHERE o.id = " . $_REQUEST['id_ordine']);
+
+$ordine = $db->single();
 
 $cart->empty_cart();
 
@@ -221,7 +247,115 @@ include("inc_header.php");
                             DETTAGLI PER IL PAGAMENTO:<br />
                             <?php
 
-                            if ($_POST['pay_metod'] == 'Carta di Credito') {
+                            if ($_POST['pay_metod'] == 'Carta') {
+                                // id_pagam usato come identificativo esterno
+                                $orderIdEsterno = $idPagamUnivoco; // string univoca
+                                $totaleEuro     = (float)$totale_ordine;
+                                $amount         = (int)round($totaleEuro * 100); // centesimi
+
+                                // Dati cliente (adatta ai tuoi nomi colonna)
+                                $nome      = $ordine['nome'];
+                                $cognome   = $ordine['cognome'];
+                                $email     = $ordine['email'];
+                                $telefono  = $ordine['telefono'];    // se vuoi usarlo
+                                $cellulare = $ordine['cellulare'];   // se vuoi usarlo
+                                $indirizzo = $ordine['indirizzo'];
+
+                                // 2) Costruisci payload per /orders/hpp secondo specifiche Nexi
+                                $resultUrl      = 'https://www.tuodominio.it/esito-nexi.php';
+                                $notificationUrl = 'https://www.tuodominio.it/notifica-nexi.php';
+
+                                $payload = array(
+                                    'order' => array(
+                                        'orderId'     => $orderIdEsterno,
+                                        'amount'      => $amount,
+                                        'currency'    => 'EUR',
+                                        'description' => 'Ordine ' . $orderIdEsterno
+                                    ),
+                                    'paymentSession' => array(
+                                        // es. cards; controlla il valore esatto ammesso per HPP
+                                        'paymentService' => 'cards'
+                                    ),
+                                    'customer' => array(
+                                        'firstName' => $nome,
+                                        'lastName'  => $cognome,
+                                        'email'     => $email,
+                                        // eventuale indirizzo se previsto
+                                    ),
+                                    'urls' => array(
+                                        'resultUrl'       => $resultUrl,
+                                        'notificationUrl' => $notificationUrl
+                                    )
+                                    // eventuali altri campi previsti (language, etc.)
+                                );
+
+                                $jsonPayload = json_encode($payload);
+
+                                // 3) Endpoint Nexi (usa sandbox/prod corretti da documentazione /orders/hpp)
+                                $url = 'https://xpaysandbox.nexigroup.com/api/phoenix-0.0/psp/api/v1/orders/hpp'; // SOSTITUISCI con URL ufficiale
+
+                                // 4) Header con autenticazione (API key / bearer / alias + chiave, in base al tuo contratto)
+                                $headers = array(
+                                    'Content-Type: application/json',
+                                    // 'Authorization: Bearer TUO_TOKEN',              // esempio
+                                    // 'API-Key: TUO_API_KEY'                          // esempio
+                                    // o altri header specifici Nexi
+                                );
+
+                                // 5) Chiamata cURL
+                                $ch = curl_init();
+                                curl_setopt($ch, CURLOPT_URL, $url);
+                                curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+                                curl_setopt($ch, CURLOPT_POST, true);
+                                curl_setopt($ch, CURLOPT_POSTFIELDS, $jsonPayload);
+                                curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+                                curl_setopt($ch, CURLOPT_TIMEOUT, 30);
+
+                                $responseBody = curl_exec($ch);
+                                $httpCode     = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+
+                                if ($responseBody === false) {
+                                    // logga errore
+                                    $err = curl_error($ch);
+                                    curl_close($ch);
+                                    die('Errore comunicazione Nexi: ' . htmlspecialchars($err));
+                                }
+                                curl_close($ch);
+
+                                // 6) Gestione risposta
+                                $res = json_decode($responseBody, true);
+                                if (!is_array($res)) {
+                                    die('Risposta Nexi non valida');
+                                }
+
+                                // ATTENZIONE: i nomi dei campi dipendono dalla specifica,
+                                // es. 'hostedPageUrl', 'redirectUrl', 'hostedPage', ecc. [web:40][web:3]
+                                $urlHosted = isset($res['hostedPageUrl']) ? $res['hostedPageUrl'] : null;
+                                $nexiOrderId = isset($res['order']['id']) ? $res['order']['id'] : null;
+                                $securityToken = isset($res['securityToken']) ? $res['securityToken'] : null;
+
+                                if (!$urlHosted) {
+                                    // logga $responseBody
+                                    die('URL Hosted Page mancante nella risposta Nexi');
+                                }
+
+                                // 7) Salva riferimenti Nexi nell’ordine (aggiungi colonne se non ci sono)
+                                $sqlUp = sprintf(
+                                    "UPDATE bag_ordini SET id_pagam='%s', nexi_sec_token='%s', pagato=0 WHERE id=%d",
+                                    mysqli_real_escape_string($conn, $nexiOrderId),
+                                    mysqli_real_escape_string($conn, "nexi_order_id: " . $nexiOrderId . " - nexi_sec_token: " . $securityToken),
+                                    (int)$ordine['idordine']
+                                );
+                                mysqli_query($conn, $sqlUp);
+
+                                // 8) Redirect alla Hosted Payment Page
+                                header('Location: ' . $urlHosted);
+                                exit;
+
+                                // Se arrivi qui e il metodo non è riconosciuto
+                                die('Metodo di pagamento non valido');
+
+                                /*
                                 //require_once "GestPayCrypt.inc.php";
                                 require_once "gestpay.php";
                                 $crypt = new GestPayCrypt();
@@ -244,14 +378,13 @@ include("inc_header.php");
                                     <input type="image" src="<?= BASE_URL; ?>images/pagaadessoconcarta.jpg" />
                                 </form>
 
-                            <?php } else if ($_POST['pay_metod'] == 'Bonifico Bancario') {
-
+                            <?php
+                            */
+                            } else if ($_POST['pay_metod'] == 'Bonifico') {
                                 echo $lang['testo_pag_bon'];
                             }
 
                             ?>
-
-
 
                         </div>
                     </div>

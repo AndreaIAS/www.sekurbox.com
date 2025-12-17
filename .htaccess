@@ -51,6 +51,7 @@ RewriteRule ^it/condizioni-vendita  condizioni-vendita.php [L]
 RewriteRule ^it/recesso  diritto-recesso.php [L]
 RewriteRule ^it/note-legali  note-legali.php [L]
 RewriteRule ^it/privacy  privacy.php [L]
+RewriteRule ^it/manutenzione  manutenzione.php [L]
 
 
 
