@@ -130,7 +130,7 @@ function ieversion()
                <button class="stdbtn btn_blue" style="float:right;margin:20px;" >Inserisci nuovo</button>
                </a>-->
 
-                <table cellpadding="0" cellspacing="0" border="0" class="stdtable" id="dyntable">
+                <table cellpadding="0" cellspacing="0" border="0" class="stdtable" id="dyntableOrdini">
 
                     <colgroup>
                         <col class="con1" />
@@ -179,7 +179,7 @@ function ieversion()
                         $db->query("SELECT bag_ordini.* 
                                  FROM 
                                  bag_ordini
-                                 ORDER BY bag_ordini.id DESC");
+                                 ORDER BY id DESC");
 
                         $records = $db->resultset();
 
@@ -230,10 +230,11 @@ function ieversion()
 
         </div>
 
-        <br /><br />
-
-    <?php   }    ?>
-
+        <br />
+        <br />
+    <?php
+                        }
+    ?>
 
     <!-- Script per vedere i dettagli -->
     <script>
@@ -740,6 +741,12 @@ function ieversion()
 
 
 <script>
+    	
+	jQuery('#dyntableOrdini').dataTable({
+		"sPaginationType": "full_numbers",
+		"aaSortingFixed": [[0,'desc']]
+	});
+
     jQuery(".imgpagato").click(function() {
         var questo = jQuery(this);
         var statoAttuale = questo.attr('for');
