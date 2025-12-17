@@ -381,6 +381,70 @@ if ($_POST['function'] == 'aggiornastatopag') {
 //******************************** FINE STATO PAGAMENTO ********************************************    
 
 
+//********************************INVIA MAIL CONFERMA ORDINE ********************************************
+if ($_POST['function'] == 'inviamailconfermaordine') {
+  if (!isset($_SESSION['admin_account']['login']) || !$_SESSION['admin_account']['login']) {
+    $arr = array('errore' => 'Accesso non autorizzato');
+    echo json_encode($arr);
+    exit();
+  }
+
+  $idOrdine = isset($_POST['id']) ? (int)$_POST['id'] : 0;
+  if ($idOrdine <= 0) {
+    $arr = array('errore' => 'Ordine non valido');
+    echo json_encode($arr);
+    exit();
+  }
+
+  $db->query("SELECT * FROM bag_ordini WHERE id='" . $idOrdine . "' ");
+  $ordine = $db->single();
+  if (!$ordine) {
+    $arr = array('errore' => 'Ordine non trovato');
+    echo json_encode($arr);
+    exit();
+  }
+
+  if (!isset($ordine['pagato']) || $ordine['pagato'] != 's') {
+    $arr = array('errore' => 'Ordine non risulta pagato');
+    echo json_encode($arr);
+    exit();
+  }
+
+  if (!isset($ordine['email']) || trim($ordine['email']) === '') {
+    $arr = array('errore' => 'Email cliente mancante');
+    echo json_encode($arr);
+    exit();
+  }
+
+  $template_email = @file_get_contents(BASE_URL_HOME . "template-email.php?id_ordine=" . $idOrdine);
+  if ($template_email === false) {
+    $arr = array('errore' => 'Impossibile caricare template email');
+    echo json_encode($arr);
+    exit();
+  }
+
+  $mail = new PHPmailer();
+  $mail->IsHTML(true);
+  $mail->CharSet = 'UTF-8';
+  $mail->From = 'info@sekurbox.com';
+  $mail->FromName = 'Sekurbox';
+  $mail->AddAddress($ordine['email']);
+  $mail->Subject = 'Sekurbox.com - Conferma ordine numero SK' . $idOrdine;
+  $mail->Body = $template_email;
+
+  if (!$mail->Send()) {
+    $arr = array('errore' => $mail->ErrorInfo);
+    echo json_encode($arr);
+    exit();
+  }
+
+  $arr = array('errore' => 'no');
+  echo json_encode($arr);
+  exit();
+}
+//********************************FINE INVIA MAIL CONFERMA ORDINE ********************************************
+
+
 //********************************AGGIORNA STATO SPEDITO ********************************************
 
 if ($_POST['function'] == 'aggiornastatosped') {

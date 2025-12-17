@@ -742,14 +742,34 @@ function ieversion()
 <script>
     jQuery(".imgpagato").click(function() {
         var questo = jQuery(this);
+        var statoAttuale = questo.attr('for');
+        var msg = (statoAttuale === 's') ? 'Confermi di impostare l\'ordine come NON pagato?' : 'Confermi di impostare l\'ordine come pagato?';
+        if (!confirm(msg)) {
+            return false;
+        }
         jQuery.post("<?= BASE_URL; ?>functionload.php", {
                 function: 'aggiornastatopag',
                 id: questo.attr('id'),
-                statoattuale: questo.attr('for')
+                statoattuale: statoAttuale
             },
             function(data) {
                 questo.attr('src', './images/' + data.valore + '.jpg');
                 questo.attr('for', data.valore);
+
+                if (data.valore === 's') {
+                    if (confirm('Vuoi inviare la mail di conferma ordine al cliente?')) {
+                        jQuery.post("<?= BASE_URL; ?>functionload.php", {
+                                function: 'inviamailconfermaordine',
+                                id: questo.attr('id')
+                            },
+                            function(resp) {
+                                if (resp && resp.errore && resp.errore != 'no') {
+                                    alert(resp.errore);
+                                }
+                            },
+                            "json");
+                    }
+                }
             },
             "json");
     });

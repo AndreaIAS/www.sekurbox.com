@@ -1,6 +1,7 @@
 <?php
 
 include("inc_config.php");
+include_once("secrets.php");
 //
 if (!isset($_SESSION['user_site'])) {
     header("Location: " . BASE_URL . "registrati.php");
@@ -163,45 +164,52 @@ $db->query("SELECT
                 spedito
             FROM bag_utenti u
             INNER JOIN bag_ordini o ON o.id_utente = u.id
-            WHERE o.id = " . $_REQUEST['id_ordine']);
+            WHERE o.id = " . (int)$id_ordine);
 
 $ordine = $db->single();
 
-$cart->empty_cart();
+if ($_POST['pay_metod'] != 'Carta' && $_POST['pay_metod'] != 'Bonifico') {
+    $cart->empty_cart();
 
-//INVIO EMAIL CONFERMA ORDINE
-$template_email = file_get_contents(BASE_URL . "template-email.php?id_ordine=" . $id_ordine);
-//istanziamo la classe
-$messaggio = new PHPmailer();
-$messaggio->IsHTML(true);
-$messaggio->SetLanguage("it", './php_mailer_language/');
-//$messaggio->IsSMTP(); //Specify usage of SMTP Server
-//$messaggio->Host = "smtps.aruba.it"; //SMTP+ Server address 
-//$messaggio->Port="465";  //SET the SMTP Server port              
-//$messaggio->Username = "info@sekurbox.com"; //SMTP+ authentication: username
-//$messaggio->Password = ""; //SMTP+ authentication: password      
-//$messaggio->SMTPAuth = true;  //Authentication required
-//$messaggio->SMTPSecure = "ssl";
-//$mail->SMTPDebug  = 1;
-//$mail->SMTPSecure = 'tls';
-$messaggio->CharSet = 'UTF-8';
+    //INVIO EMAIL CONFERMA ORDINE
+    $template_email = file_get_contents(BASE_URL . "template-email.php?id_ordine=" . $id_ordine);
+    //istanziamo la classe
+    $messaggio = new PHPmailer();
+    $messaggio->IsHTML(true);
+    $messaggio->SetLanguage("it", './php_mailer_language/');
+    //$messaggio->IsSMTP(); //Specify usage of SMTP Server
+    //$messaggio->Host = "smtps.aruba.it"; //SMTP+ Server address 
+    //$messaggio->Port="465";  //SET the SMTP Server port              
+    //$messaggio->Username = "info@sekurbox.com"; //SMTP+ authentication: username
+    //$messaggio->Password = ""; //SMTP+ authentication: password      
+    //$messaggio->SMTPAuth = true;  //Authentication required
+    //$messaggio->SMTPSecure = "ssl";
+    //$mail->SMTPDebug  = 1;
+    //$mail->SMTPSecure = 'tls';
+    $messaggio->CharSet = 'UTF-8';
 
-//definiamo le intestazioni e il corpo del messaggio
-$messaggio->From = 'info@sekurbox.com';
-$messaggio->FromName = "Sekurbox";
-$messaggio->AddAddress($_SESSION['email']);
+    //definiamo le intestazioni e il corpo del messaggio
+    $messaggio->From = 'info@sekurbox.com';
+    $messaggio->FromName = "Sekurbox";
+    $messaggio->AddAddress($_SESSION['email']);
 
-//$mail->AddBCC('ippazio.martella@marss.eu');
+    //$mail->AddBCC('ippazio.martella@marss.eu');
 
-$messaggio->Subject = 'Sekurbox.com - Conferma ordine numero SK' . $id_ordine;
-$messaggio->Body = $template_email;
-//$messaggio->AddAttachment('http://www.sekurbox.com/css/stile.css'); // attach style sheet
+    $messaggio->Subject = 'Sekurbox.com - Conferma ordine numero SK' . $id_ordine;
+    $messaggio->Body = $template_email;
+    //$messaggio->AddAttachment('http://www.sekurbox.com/css/stile.css'); // attach style sheet
 
-//definiamo i comportamenti in caso di invio corretto 
-//o di errore
-if (!$messaggio->Send()) {
-    echo $messaggio->ErrorInfo;
-} else {
+    //definiamo i comportamenti in caso di invio corretto 
+    //o di errore
+    if (!$messaggio->Send()) {
+        echo $messaggio->ErrorInfo;
+    } else {
+    }
+}
+
+if ($_POST['pay_metod'] == 'Bonifico') {
+    header('Location: ' . BASE_URL . 'esito-bonifico.php?id_ordine=' . $id_ordine);
+    exit;
 }
 
 include("inc_header.php");
@@ -262,8 +270,8 @@ include("inc_header.php");
                                 $indirizzo = $ordine['indirizzo'];
 
                                 // 2) Costruisci payload per /orders/hpp secondo specifiche Nexi
-                                $resultUrl      = 'https://www.tuodominio.it/esito-nexi.php';
-                                $notificationUrl = 'https://www.tuodominio.it/notifica-nexi.php';
+                                $resultUrl      = BASE_URL . 'esito-nexi.php?id_ordine=' . (int)$id_ordine;
+                                $notificationUrl = BASE_URL . 'notifica-nexi.php?id_ordine=' . (int)$id_ordine;
 
                                 $payload = array(
                                     'order' => array(
@@ -292,7 +300,10 @@ include("inc_header.php");
                                 $jsonPayload = json_encode($payload);
 
                                 // 3) Endpoint Nexi (usa sandbox/prod corretti da documentazione /orders/hpp)
-                                $url = 'https://xpaysandbox.nexigroup.com/api/phoenix-0.0/psp/api/v1/orders/hpp'; // SOSTITUISCI con URL ufficiale
+                                $url = defined('NEXI_HPP_ENDPOINT') ? NEXI_HPP_ENDPOINT : '';
+                                if (!$url) {
+                                    die('Endpoint Nexi mancante in secrets.php (NEXI_HPP_ENDPOINT)');
+                                }
 
                                 // 4) Header con autenticazione (API key / bearer / alias + chiave, in base al tuo contratto)
                                 $headers = array(
@@ -301,6 +312,13 @@ include("inc_header.php");
                                     // 'API-Key: TUO_API_KEY'                          // esempio
                                     // o altri header specifici Nexi
                                 );
+
+                                if (defined('NEXI_BEARER_TOKEN') && NEXI_BEARER_TOKEN) {
+                                    $headers[] = 'Authorization: Bearer ' . NEXI_BEARER_TOKEN;
+                                }
+                                if (defined('NEXI_API_KEY') && NEXI_API_KEY) {
+                                    $headers[] = 'API-Key: ' . NEXI_API_KEY;
+                                }
 
                                 // 5) Chiamata cURL
                                 $ch = curl_init();
@@ -328,6 +346,10 @@ include("inc_header.php");
                                     die('Risposta Nexi non valida');
                                 }
 
+                                if ((int)$httpCode < 200 || (int)$httpCode >= 300) {
+                                    die('Errore Nexi HTTP ' . (int)$httpCode);
+                                }
+
                                 // ATTENZIONE: i nomi dei campi dipendono dalla specifica,
                                 // es. 'hostedPageUrl', 'redirectUrl', 'hostedPage', ecc. [web:40][web:3]
                                 $urlHosted = isset($res['hostedPageUrl']) ? $res['hostedPageUrl'] : null;
@@ -340,20 +362,16 @@ include("inc_header.php");
                                 }
 
                                 // 7) Salva riferimenti Nexi nell’ordine (aggiungi colonne se non ci sono)
-                                $sqlUp = sprintf(
-                                    "UPDATE bag_ordini SET id_pagam='%s', nexi_sec_token='%s', pagato=0 WHERE id=%d",
-                                    mysqli_real_escape_string($conn, $nexiOrderId),
-                                    mysqli_real_escape_string($conn, "nexi_order_id: " . $nexiOrderId . " - nexi_sec_token: " . $securityToken),
-                                    (int)$ordine['idordine']
-                                );
-                                mysqli_query($conn, $sqlUp);
+                                $db->query("UPDATE bag_ordini SET id_pagam=:id_pagam, dati_pagam=:dati_pagam, pagato='n' WHERE id=:id");
+                                $db->execute(array(
+                                    'id_pagam'   => (string)$nexiOrderId,
+                                    'dati_pagam' => (string)$securityToken,
+                                    'id'         => (int)$id_ordine
+                                ));
 
                                 // 8) Redirect alla Hosted Payment Page
                                 header('Location: ' . $urlHosted);
                                 exit;
-
-                                // Se arrivi qui e il metodo non è riconosciuto
-                                die('Metodo di pagamento non valido');
 
                                 /*
                                 //require_once "GestPayCrypt.inc.php";
