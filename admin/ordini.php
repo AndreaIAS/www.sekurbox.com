@@ -148,7 +148,7 @@ function ieversion()
                             <th class="head1">Numero</th>
                             <th class="head0">Data</th>
                             <th class="head1">Utente</th>
-                            <th class="head0"> Totale Ordine</th>
+                            <th class="head0">Totale Ordine</th>
                             <th class="head1">Costo spedizione</th>
                             <th class="head1">Costo pagamento</th>
                             <th class="head0">Pagato</th>
