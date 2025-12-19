@@ -39,17 +39,26 @@ function ieversion()
 
     <!--<script type="text/javascript" src="<?= BASE_URL; ?>js/plugins/jquery-ui-1.8.16.custom.min.js"></script>-->
     <script type="text/javascript" src="<?= BASE_URL; ?>js/plugins/jquery.cookie.js"></script>
-    <?php if (ieversion() == 9) { ?>
+    <?php
+    if (ieversion() == 9) {
+    ?>
         <link rel="stylesheet" media="screen" href="<?= BASE_URL; ?>css/style.ie9.css" />
         <script src="http://css3-mediaqueries-js.googlecode.com/svn/trunk/css3-mediaqueries.js"></script>
-    <?php } else if (ieversion() == 8) { ?>
+    <?php
+    } else if (ieversion() == 8) {
+    ?>
         <link rel="stylesheet" media="screen" href="<?= BASE_URL; ?>css/style.ie8.css" />
-    <?php } ?>
+    <?php
+    }
+    ?>
     <!-- Font-awesome CSS-->
     <link rel="stylesheet" href="<?= BASE_URL_HOME; ?>css/font-awesome.min.css">
     <?php
-    if (isset($_REQUEST['opt'])) $todo = $_REQUEST['opt'];
-    else   $todo = 'view';
+    if (isset($_REQUEST['opt'])) {
+        $todo = $_REQUEST['opt'];
+    } else {
+        $todo = 'view';
+    }
     ?>
 
     <!--<script src="https://code.jquery.com/jquery-migrate-1.4.1.js"></script>-->
@@ -93,22 +102,16 @@ function ieversion()
         }
     </style>
 
-
 </head>
 
 <body>
-
 
     <?php
 
     require("inc_menu.php");
     require("inc_leftside.php");
 
-
     if ($todo == 'view') {  ?>
-
-
-
 
         <!-- DIV per associare il prodotto ai tag -->
 
@@ -162,7 +165,7 @@ function ieversion()
                             <th class="head1">Numero</th>
                             <th class="head0">Data</th>
                             <th class="head1">Utente</th>
-                            <th class="head0"> Totale Ordine</th>
+                            <th class="head0">Totale Ordine</th>
                             <th class="head1">Costo spedizione</th>
                             <th class="head1">Costo pagamento</th>
                             <th class="head0">Pagato</th>
@@ -183,16 +186,15 @@ function ieversion()
 
                         $records = $db->resultset();
 
-
                         if ($db->rowCount() == 0) {
-
                         ?>
 
                             <center>
                                 <p style="font-size:11px;"><b>Nessun record presente</b></p>
                             </center>
 
-                            <?php } else {
+                            <?php
+                        } else {
                             foreach ($records as $list) {    ?>
 
                                 <tr class="gradeX" id="$list['id']">
@@ -216,18 +218,12 @@ function ieversion()
                                     </td>
                                     <td class="center"><a class="inline" id="<?= $list['id']; ?>" href="#data">Vedi dettagli</a> &nbsp;
                                     </td>
-
-
                                 </tr>
 
                             <?php }  ?>
-
                     </tbody>
-
                 </table>
-
             </div>
-
         </div>
 
         <br />
@@ -247,9 +243,8 @@ function ieversion()
         });
     </script>
 
-
-
-<?php       }   //FINE VISUALIZZAZIONE  
+<?php
+    }   //FINE VISUALIZZAZIONE  
 
     else if ($todo == 'new') {  //INIZIO INSERIMENTO NUOVO PRODOTTO
 
@@ -270,7 +265,6 @@ function ieversion()
                     <div class="contenttitle2">
                         <h3>NUOVO PRODOTTO</h3>
                     </div><!--contenttitle--><br />
-
 
                     <p>
                         <b>Nome</b><br />
@@ -336,22 +330,19 @@ function ieversion()
                             </select>
                         </span>
                     </p>
-
                     <p>
                         <b>Codice</b><br />
                         <span class="field"><input type="text" name="codice" id="codice" class="smallinput" /></span>
                     </p>
-
                     <p>
                         <b>Codice mepa</b><br />
                         <span class="field"><input type="text" name="codice_mepa" id="codice_mepa" class="smallinput" /></span>
                     </p>
-
                     <p>
                         <b>Immagine principale</b><br />
                         <input type="text" class="smallinput" value="" name="img1" id="img1" />
-                    </p><br />
-
+                    </p>
+                    <br />
                     <div style="float:left;width:150px;"> <span class="field">
                             <input name="img1_upload" id="img1_upload" />
                         </span>
@@ -360,7 +351,6 @@ function ieversion()
                     <div id="box1" style="float:left;width:150px;display:none;margin-top:-8px;">
                         <img id="image1" src="" border="0" />
                     </div>
-                    </p>
                     <div class="clearall"></div>
 
                     <script type="text/javascript">
@@ -389,16 +379,17 @@ function ieversion()
                     <p>
                         <b>Immagine 2</b><br />
                         <input type="text" class="smallinput" value="" name="img2" id="img2" />
-                    </p><br />
+                    </p>
+                    <br />
 
-                    <div style="float:left;width:150px;"> <span class="field">
+                    <div style="float:left;width:150px;">
+                        <span class="field">
                             <input name="img2_upload" id="img2_upload" />
                         </span>
                     </div>
                     <div id="box2" style="float:left;width:150px;display:none;margin-top:-8px;">
                         <img id="image2" src="" border="0" />
                     </div>
-                    </p>
                     <div class="clearall"></div>
 
                     <script type="text/javascript">
@@ -424,11 +415,11 @@ function ieversion()
                         });
                     </script>
 
-
                     <p>
                         <b>Immagine 3</b><br />
                         <input type="text" class="smallinput" value="" name="img3" id="img3" />
-                    </p><br />
+                    </p>
+                    <br />
 
                     <div style="float:left;width:150px;"> <span class="field">
                             <input name="img3_upload" id="img3_upload" />
@@ -438,7 +429,6 @@ function ieversion()
                     <div id="box3" style="float:left;width:150px;display:none;margin-top:-8px;">
                         <img id="image3" src="" border="0" />
                     </div>
-                    </p>
                     <div class="clearall"></div>
 
                     <script type="text/javascript">
@@ -464,7 +454,6 @@ function ieversion()
                         });
                     </script>
 
-
                     <br />
                     <p class="stdformbutton" style="margin-left:470px;">
                         <button id="submit" class="submit radius2">Inserisci</button>
@@ -480,8 +469,8 @@ function ieversion()
 
     </div>
 
-
-<?php }  //FINE INSERIMENTO PRODOTTO
+<?php
+    }  //FINE INSERIMENTO PRODOTTO
 
     else if ($todo == 'edit') { //INIZIO MODIFICA PRODOTTO
 
@@ -492,10 +481,8 @@ function ieversion()
 
     <div class="centercontent">
 
-
         <div id="contentwrapper" class="contentwrapper">
             <div id="formbasic" class="subcontent">
-
 
                 <form id="form_prodotti" class="stdform" action="javascript:void(null)" method="post">
 
@@ -521,7 +508,6 @@ function ieversion()
                         <b>Prezzo Scontato</b><br />
                         <span class="field"><input type="text" name="prezzo_scontato" id="prezzo_scontato" class="smallinput" value="<?= $list['prezzo_scontato']; ?>" /></span>
                     </p>
-
                     <p>
                         <b>Sottocategoria</b><br />
                         <span class="field">
@@ -544,7 +530,6 @@ function ieversion()
                             </select>
                         </span>
                     </p>
-
                     <p>
                         <b>Prezzo Disponibile</b><br />
                         <span class="field">
@@ -554,12 +539,10 @@ function ieversion()
                             </select>
                         </span>
                     </p>
-
                     <p>
                         <b>Testo Offerta</b> <br />
                         <textarea name="testo_offerta" id="testo_offerta" class="tinymce"><?= $list['testo_offerta']; ?></textarea>
                     </p>
-
                     <p>
                         <b>Metti nello slider della home</b><br />
                         <span class="field">
@@ -569,38 +552,34 @@ function ieversion()
                             </select>
                         </span>
                     </p>
-
                     <p>
                         <b>Codice</b><br />
                         <span class="field"><input type="text" name="codice" id="codice" class="smallinput" value="<?= $list['codice']; ?>" /></span>
                     </p>
-
                     <p>
                         <b>Codice mepa</b><br />
                         <span class="field"><input type="text" name="codice_mepa" id="codice_mepa" class="smallinput" value="<?= $list['codice_mepa']; ?>" /></span>
                     </p>
-
-
                     <p>
                         <b>Immagine principale</b><br />
                         <input type="text" class="smallinput" name="img1" id="img1" value="<?= $list['img1']; ?>" />
-                    </p><br />
-
+                    </p>
+                    <br />
                     <div style="float:left;width:150px;">
                         <span class="field">
                             <input name="img1_upload" id="img1_upload" value="<?= $list['img1']; ?>" />
                         </span>
-
                     </div>
-                    <div id="box1" style=" <?php if ($list['img1'] == '') {
+                    <div id="box1" style="<?php
+                                            if ($list['img1'] == '') {
                                                 echo "display:none;";
-                                            } ?>float:left;width:150px;margin-top:-8px;">
+                                            }
+                                            ?>float:left;width:150px;margin-top:-8px;">
                         <img id="image1" src="<?= $phpThumbBase; ?>?src=../images/img_prod/<?= $list['img1']; ?>&iar=1&w=50&h=50&aoe=1" border="0" />
                         <span style="cursor: pointer;" onclick="jQuery('#img1').val('');jQuery('#box1').fadeOut('');jQuery.post('<?= BASE_URL; ?>functionload.php',{function:'eliminafotoprod',image:'<?= $list['img1']; ?>',idprod:'<?= $list['id']; ?>',titolo:'img1'});">
                             <img src="<?= BASE_URL; ?>images/delete.png" border="0" title="elimina" />
                         </span>
                     </div>
-                    </p>
                     <div class="clearall"></div>
 
                     <script type="text/javascript">
@@ -626,27 +605,26 @@ function ieversion()
                         });
                     </script>
 
-
                     <p>
                         <b>Immagine 2</b><br />
                         <input type="text" class="smallinput" name="img2" id="img2" value="<?= $list['img2']; ?>" />
-                    </p><br />
-
+                    </p>
+                    <br />
                     <div style="float:left;width:150px;">
                         <span class="field">
                             <input name="img2_upload" id="img2_upload" value="<?= $list['img2']; ?>" />
                         </span>
-
                     </div>
-                    <div id="box2" style=" <?php if ($list['img2'] == '') {
+                    <div id="box2" style="<?php
+                                            if ($list['img2'] == '') {
                                                 echo "display:none;";
-                                            } ?>float:left;width:150px;margin-top:-8px;">
+                                            }
+                                            ?>float:left;width:150px;margin-top:-8px;">
                         <img id="image2" src="<?= $phpThumbBase; ?>?src=../images/img_prod/<?= $list['img2']; ?>&iar=1&w=50&h=50&aoe=1" border="0" />
                         <span style="cursor: pointer;" onclick="jQuery('#img2').val('');jQuery('#box2').fadeOut('');jQuery.post('<?= BASE_URL; ?>functionload.php',{function:'eliminafotoprod',image:'<?= $list['img2']; ?>',idprod:'<?= $list['id']; ?>',titolo:'img2'});">
                             <img src="<?= BASE_URL; ?>images/delete.png" border="0" title="elimina" />
                         </span>
                     </div>
-                    </p>
                     <div class="clearall"></div>
 
                     <script type="text/javascript">
@@ -671,7 +649,6 @@ function ieversion()
                             });
                         });
                     </script>
-
                     <p>
                         <b>Immagine 3</b><br />
                         <input type="text" class="smallinput" name="img3" id="img3" value="<?= $list['img3']; ?>" />
@@ -680,17 +657,17 @@ function ieversion()
                     <div style="float:left;width:150px;"> <span class="field">
                             <input name="img3_upload" id="img3_upload" />
                         </span>
-
                     </div>
-                    <div id="box3" style=" <?php if ($list['img3'] == '') {
+                    <div id="box3" style=" <?php
+                                            if ($list['img3'] == '') {
                                                 echo "display:none;";
-                                            } ?>float:left;width:150px;margin-top:-8px;">
+                                            }
+                                            ?>float:left;width:150px;margin-top:-8px;">
                         <img id="image3" src="<?= $phpThumbBase; ?>?src=../images/img_prod/<?= $list['img3']; ?>&iar=1&w=50&h=50&aoe=1" border="0" />
                         <span style="cursor: pointer;" onclick="jQuery('#img3').val('');jQuery('#box3').fadeOut('');jQuery.post('<?= BASE_URL; ?>functionload.php',{function:'eliminafotoprod',image:'<?= $list['img3']; ?>',idprod:'<?= $list['id']; ?>',titolo:'img3'});">
                             <img src="<?= BASE_URL; ?>images/delete.png" border="0" title="elimina" />
                         </span>
                     </div>
-                    </p>
                     <div class="clearall"></div>
 
                     <script type="text/javascript">
@@ -716,7 +693,6 @@ function ieversion()
                         });
                     </script>
 
-
                     <p class="stdformbutton" style="margin-left:470px;">
                         <button id="submit" class="submit radius2">Salva</button>
                     </p>
@@ -726,26 +702,23 @@ function ieversion()
 
                 </form>
 
-
             </div>
-
 
         </div>
 
     </div>
 
-
-<?php }  //FINE EDIT PRODOTTO
-
+<?php
+    }  //FINE EDIT PRODOTTO
 ?>
 
-
 <script>
-    	
-	jQuery('#dyntableOrdini').dataTable({
-		"sPaginationType": "full_numbers",
-		"aaSortingFixed": [[0,'desc']]
-	});
+    jQuery('#dyntableOrdini').dataTable({
+        "sPaginationType": "full_numbers",
+        "aaSortingFixed": [
+            [0, 'desc']
+        ]
+    });
 
     jQuery(".imgpagato").click(function() {
         var questo = jQuery(this);
